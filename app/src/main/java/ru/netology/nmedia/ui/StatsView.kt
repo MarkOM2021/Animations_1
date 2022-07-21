@@ -79,6 +79,9 @@ class StatsView @JvmOverloads constructor(
             paint.color = colors.getOrNull(index) ?: randomColor()
             canvas.drawArc(oval, startFrom, angle * progress, false, paint)
             startFrom += angle
+
+            paint.color = colors.getOrNull(0) ?: randomColor()
+            canvas.drawArc(oval, startFrom, 360F * datum / 10, false, paint)
         }
 
         canvas.drawText(
