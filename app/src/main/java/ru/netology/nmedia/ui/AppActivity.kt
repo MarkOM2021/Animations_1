@@ -1,17 +1,7 @@
 package ru.netology.nmedia.ui
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.animation.ValueAnimator.REVERSE
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.BounceInterpolator
-import android.view.animation.LinearInterpolator
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ru.netology.nmedia.R
 
@@ -20,16 +10,22 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val values = listOf(
+            500F,
+            500F,
+            500F,
+            500F,
+        )
+
         val view = findViewById<StatsView>(R.id.stats)
         view.postDelayed({
             view.data = listOf(
-                0.25F,
-                0.25F,
-                0.25F,
-                0.25F,
+                percentCalculator(values[0], values),
+                percentCalculator(values[1], values),
+                percentCalculator(values[2], values),
+                percentCalculator(values[3], values),
             )
         }, 3000)
-
 
 
 //        val viewAnim = AnimationUtils.loadAnimation(
@@ -98,4 +94,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 //            playSequentially(scale, alpha)
 //        }.start()
     }
+}
+
+private fun percentCalculator(value: Float, values: List<Float>): Float {
+    return value / values.sum()
 }
