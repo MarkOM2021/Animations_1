@@ -30,7 +30,9 @@ class StatsView @JvmOverloads constructor(
     private var colors = emptyList<Int>()
 
     private var progress = 0F
+    private var segmentRotation = 0F
     private var valueAnimator: ValueAnimator? = null
+    private var valueRotator: ValueAnimator? = null
 
     init {
         context.withStyledAttributes(attrs, R.styleable.StatsView) {
@@ -77,11 +79,11 @@ class StatsView @JvmOverloads constructor(
         for ((index, datum) in data.withIndex()) {
             val angle = 360F * datum
             paint.color = colors.getOrNull(index) ?: randomColor()
-            canvas.drawArc(oval, startFrom, angle * progress, false, paint)
+            canvas.drawArc(oval, startFrom + segmentRotation, angle * progress, false, paint)
             startFrom += angle
 
-            paint.color = colors.getOrNull(0) ?: randomColor()
-            canvas.drawArc(oval, startFrom, 360F * datum / 10, false, paint)
+            //paint.color = colors.getOrNull(0) ?: randomColor()
+            //canvas.drawArc(oval, startFrom, angle / 10, false, paint)
         }
 
         canvas.drawText(
@@ -93,18 +95,31 @@ class StatsView @JvmOverloads constructor(
     }
 
     private fun update() {
+        // сначала "вычищаем" любую предыдущую анимацию
         valueAnimator?.let {
             it.removeAllListeners()
             it.cancel()
         }
         progress = 0F
+        segmentRotation = 0F
 
         valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
             addUpdateListener { anim ->
                 progress = anim.animatedValue as Float
                 invalidate()
             }
-            duration = 500
+            duration = 1_500
+            interpolator = LinearInterpolator()
+        }.also {
+            it.start()
+        }
+
+        valueRotator = ValueAnimator.ofFloat(0F, 360F).apply {
+            addUpdateListener { anim ->
+                segmentRotation = anim.animatedValue as Float
+                invalidate()
+            }
+            duration = 1_500
             interpolator = LinearInterpolator()
         }.also {
             it.start()
